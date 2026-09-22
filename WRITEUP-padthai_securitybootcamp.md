@@ -14,7 +14,7 @@ Thử thách này trị giá **10.000 điểm** — mức điểm cao, nghĩa l�
 
 ---
 
-## Tóm tắt trong một đoạn (dành cho người vội)
+## Tóm tắt trong một đoạn 
 
 Khi bạn vào website, nó phát cho bạn một tấm "vé giữ chỗ" (cookie phiên đăng nhập) đã bị **mã hóa**. Tôi phát hiện ra cách máy chủ kiểm tra tấm vé này có một **lỗ hổng cổ điển** cho phép tôi vừa **giải mã** nội dung tấm vé, vừa **tự chế ra tấm vé giả** mà máy chủ vẫn tin — dù tôi **không hề biết chìa khóa mã hóa**.
 
