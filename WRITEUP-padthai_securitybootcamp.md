@@ -2,7 +2,7 @@
 
 ## Bối cảnh: thử thách là gì?
 
-Ban tổ chức dựng lên một website giả lập (một "nhà hàng Thái") và giấu trong đó một **cờ (flag)** — một chuỗi bí mật dạng `SBC{...}`. Nhiệm vụ của người chơi là tìm cách "đột nhập" vào máy chủ để đọc được chuỗi bí mật đó. Ai đọc được flag trước và nộp lên thì được điểm.
+Ban tổ chức dựng Security Bootcamp 2026 lên một website giả lập (một "nhà hàng Thái") và giấu trong đó một **cờ (flag)** — một chuỗi bí mật dạng `SBC{...}`. Nhiệm vụ của người chơi là tìm cách "đột nhập" vào máy chủ để đọc được chuỗi bí mật đó. Ai đọc được flag trước và nộp lên thì được điểm.
 
 Điểm mấu chốt: trên máy chủ có sẵn một lệnh tên là `/readflag`. Chỉ cần **chạy được lệnh này trên máy chủ của họ**, nó sẽ in ra flag. Vấn đề là website không cho phép người dùng bình thường chạy lệnh gì cả. Vậy nên toàn bộ thử thách là: *làm sao lừa được máy chủ tự chạy lệnh `/readflag` giúp mình, rồi gửi kết quả về cho mình.*
 
@@ -10,7 +10,7 @@ Thử thách này trị giá **10.000 điểm** — mức điểm cao, nghĩa l�
 
 ---
 
-## Tóm tắt trong một đoạn 
+## Tóm tắt ngắn gọn
 
 Khi bạn vào website, nó phát cho bạn một tấm "vé giữ chỗ" (cookie phiên đăng nhập) đã bị **mã hóa**. Tôi phát hiện ra cách máy chủ kiểm tra tấm vé này có một **lỗ hổng cổ điển** cho phép tôi vừa **giải mã** nội dung tấm vé, vừa **tự chế ra tấm vé giả** mà máy chủ vẫn tin — dù tôi **không hề biết chìa khóa mã hóa**.
 
