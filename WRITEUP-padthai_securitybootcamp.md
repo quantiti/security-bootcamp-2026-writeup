@@ -1,4 +1,4 @@
-# Lạc Thái 48 — Kể lại một lần "phá két" trong cuộc thi an ninh mạng
+# Lẩu Thái 48 — Kể lại một lần "phá két" trong cuộc thi an ninh mạng
 
 ## Bối cảnh: thử thách là gì?
 
