@@ -1,9 +1,5 @@
 # Lạc Thái 48 — Kể lại một lần "phá két" trong cuộc thi an ninh mạng
 
-> Đây là bản viết lại của một bài giải (writeup) cho một thử thách trong cuộc thi **Security Bootcamp 2026** (thể thức Tấn công & Phòng thủ). Mục tiêu của bản này là để **người không làm trong ngành an ninh mạng vẫn đọc và hiểu được** tôi đã làm gì, tại sao làm được, và bài học rút ra. Những đoạn kỹ thuật sâu vẫn được giữ lại nhưng luôn kèm giải thích bằng ngôn ngữ đời thường.
-
----
-
 ## Bối cảnh: thử thách là gì?
 
 Ban tổ chức dựng lên một website giả lập (một "nhà hàng Thái") và giấu trong đó một **cờ (flag)** — một chuỗi bí mật dạng `SBC{...}`. Nhiệm vụ của người chơi là tìm cách "đột nhập" vào máy chủ để đọc được chuỗi bí mật đó. Ai đọc được flag trước và nộp lên thì được điểm.
