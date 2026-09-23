@@ -6,7 +6,7 @@
 
 ## 1. Bài toán chúng tôi nhận được
 
-Security Bootcamp Arena 2026 là một đấu trường Attack & Defense: mỗi đội nhận một máy chủ vật lý chứa hạ tầng doanh nghiệp giả lập đã bị ransomware tác động. Đội phải khôi phục dịch vụ, điều tra dấu vết xâm nhập và bảo vệ hệ thống khi các đội khác bắt đầu tấn công. Đó là một bài toán vận hành có đối thủ: dịch vụ vừa được đưa lên có thể lập tức trở thành mục tiêu. Theo mô tả BTC, hệ thống phải hoạt động ổn định tối thiểu 10 phút để đáp ứng điều kiện phục hồi; các dịch vụ giám sát của BTC phải được duy trì. [1, tr. 2, 6–7]
+Security Bootcamp Arena 2026 là một đấu trường Attack & Defense: mỗi đội nhận một máy chủ vật lý chứa hạ tầng doanh nghiệp giả lập đã bị ransomware tác động. Đội phải khôi phục dịch vụ, điều tra dấu vết xâm nhập và bảo vệ hệ thống khi các đội khác bắt đầu tấn công. Đó là một bài toán vận hành có đối thủ: dịch vụ vừa được đưa lên có thể lập tức trở thành mục tiêu. Theo mô tả BTC, hệ thống phải hoạt động ổn định tối thiểu 10 phút để đáp ứng điều kiện phục hồi; các dịch vụ giám sát của BTC phải được duy trì. 
 
 Trong tình huống này, chỉ có trang web trả HTTP 200 chưa đủ. Chúng tôi cần trả lời đồng thời bốn câu hỏi:
 
@@ -15,14 +15,13 @@ Trong tình huống này, chỉ có trang web trả HTTP 200 chưa đủ. Chúng
 3. Làm sao biết bản rõ thu hồi là đúng, đặc biệt với khóa ứng dụng và cấu hình?
 4. Sau khi phục hồi, những đường truy cập nào phải siết mà vẫn đáp ứng yêu cầu của đấu trường?
 
-Kết quả nổi bật là phục hồi Jenkins từ dữ liệu còn sót trong RAM/đĩa, sau đó tìm được frame phục vụ giải mã Palimpsest trong RAM Edge-proxy và K3S. Lượt giải mã nhiều máy ghi nhận **662 file được xác thực và thay thế**; nguồn đĩa Edge-proxy có thêm **101/101 container giải mã thành công**. Tuy nhiên, kết quả giải mã không đồng nghĩa hệ thống đã an toàn: kiểm tra sau gia cố vẫn thấy Edge bị bypass bằng Host là IP, còn một lượt điều tra sau đó xác nhận pfSense bị chiếm tài khoản quản trị. [2][3][4][7][8]
+Kết quả nổi bật là phục hồi Jenkins từ dữ liệu còn sót trong RAM/đĩa, sau đó tìm được frame phục vụ giải mã Palimpsest trong RAM Edge-proxy và K3S. Lượt giải mã nhiều máy ghi nhận **662 file được xác thực và thay thế**; nguồn đĩa Edge-proxy có thêm **101/101 container giải mã thành công**. Tuy nhiên, kết quả giải mã không đồng nghĩa hệ thống đã an toàn: kiểm tra sau gia cố vẫn thấy Edge bị bypass bằng Host là IP, còn một lượt điều tra sau đó xác nhận pfSense bị chiếm tài khoản quản trị. 
 
 ## 2. Hiểu hệ thống trước khi sửa từng máy
 
 ### 2.1. Một doanh nghiệp thu nhỏ trên ESXi
 
-Theo sơ đồ BTC, mỗi đội có một vùng WAN riêng, pfSense làm firewall/router và các máy ảo nằm trên ESXi. Trong bằng chứng đang xét, WAN pfSense là `10.10.117.2`, ESXi là `10.10.117.3`.;  [1, tr. 16–18][2][8]
-
+Theo sơ đồ BTC, mỗi đội có một vùng WAN riêng, pfSense làm firewall/router và các máy ảo nằm trên ESXi. Trong bằng chứng đang xét, WAN pfSense là `10.10.117.2`, ESXi là `10.10.117.3`.;  
 | Vùng mạng | Thành phần chính | Vai trò trong bài |
 |---|---|---|
 | VLAN 201 — `172.16.201.0/24` | Edge-proxy .102, Gitea .103, CI-runner .104 | Web công khai, mã nguồn và thực thi job CI |
@@ -60,13 +59,13 @@ Gitea -> token/credential -> Jenkins hoặc Git/ArgoCD
 DNS/NFS cung cấp các phụ thuộc cho nhiều mắt xích trên.
 ```
 
-Đề Supply Chain mô tả năm giai đoạn: đi qua Edge bằng Host Header Injection, lấy token Gitea, tiếp cận Jenkins hoặc sửa manifest ArgoCD, đưa package vào Verdaccio, rồi để app-runner cài package có lifecycle script. “Host Header Injection” ở đây có nghĩa client thay header `Host` để Nginx chọn một dịch vụ nội bộ làm đích proxy. Nếu dịch vụ sau đó dùng token có quyền lớn, một yêu cầu web ở biên có thể tiến sâu vào chuỗi triển khai. [1, tr. 10–13]
+Đề Supply Chain mô tả năm giai đoạn: đi qua Edge bằng Host Header Injection, lấy token Gitea, tiếp cận Jenkins hoặc sửa manifest ArgoCD, đưa package vào Verdaccio, rồi để app-runner cài package có lifecycle script. “Host Header Injection” ở đây có nghĩa client thay header `Host` để Nginx chọn một dịch vụ nội bộ làm đích proxy. Nếu dịch vụ sau đó dùng token có quyền lớn, một yêu cầu web ở biên có thể tiến sâu vào chuỗi triển khai. 
 
 Điều này giải thích vì sao phục hồi từng VM riêng lẻ chưa giải quyết xong bài toán. Khi DNS/NFS chưa lên, ứng dụng phụ thuộc vẫn lỗi; khi khôi phục nguyên cấu hình lab, các đường tấn công có chủ đích trong đề cũng hoạt động trở lại.
 
 ### 2.3. Những ràng buộc quyết định chiến lược
 
-BTC yêu cầu **giữ mở WAN 8000 và 8080**. Đề cũng liệt kê cổng giám sát cho DC, workstation, VPN và quản trị. Đóng hết đường vào có thể làm giảm tấn công nhưng đồng thời làm dịch vụ không đạt yêu cầu. Phần siết FW vì vậy phải bắt đầu từ danh sách luồng bắt buộc và quyền truy cập ứng dụng. [1, tr. 10–11, 14–15]
+BTC yêu cầu **giữ mở WAN 8000 và 8080**. Đề cũng liệt kê cổng giám sát cho DC, workstation, VPN và quản trị. Đóng hết đường vào có thể làm giảm tấn công nhưng đồng thời làm dịch vụ không đạt yêu cầu. Phần siết FW vì vậy phải bắt đầu từ danh sách luồng bắt buộc và quyền truy cập ứng dụng. 
 
 ## 3. Chiến lược ứng cứu: giảm thời gian ngừng dịch vụ, vẫn giữ khả năng chứng minh
 
@@ -149,7 +148,7 @@ Container có 100 byte header, ciphertext và tag 16 byte. Với plaintext dài 
 | `0x60` | 4 | CRC32 của 96 byte đầu |
 | `0x64` | Biến đổi | Ciphertext và tag Poly1305 16 byte |
 
-Ví dụ, container `master.key` của Jenkins dài 372 byte ứng với dữ liệu gốc 256 byte. Cấu hình Nginx Edge dài 4.891 byte ứng với bản gốc 4.775 byte. Các quan hệ này giúp loại ứng viên bị cắt hoặc không đúng loại. Chúng chưa chứng minh đã tìm được khóa. [2][3][5]
+Ví dụ, container `master.key` của Jenkins dài 372 byte ứng với dữ liệu gốc 256 byte. Cấu hình Nginx Edge dài 4.891 byte ứng với bản gốc 4.775 byte. Các quan hệ này giúp loại ứng viên bị cắt hoặc không đúng loại. Chúng chưa chứng minh đã tìm được khóa. 
 
 ### 5.2. Ba vật liệu cần có
 
@@ -408,25 +407,3 @@ Hồ sơ chưa chứng minh đầy đủ SLA liên tục của toàn hệ thốn
 **Đọc kỹ điều kiện của môi trường.** Offline giải thích một số lỗi cập nhật/image. Cổng bắt buộc mở giới hạn cách siết FW. Thử nghiệm đạt ở LAN chưa chứng minh WAN hoạt động.
 
 **Xem firewall là tài sản cần bảo vệ.** Thiết bị thực thi chính sách bị chiếm quyền có thể tự mở lại đường vào. Quyền quản trị, session, config history và khả năng rollback quan trọng ngang danh sách rule.
-
-## 12. Nguồn và hồ sơ để tái kiểm tra
-
-[1] [PDF mô tả Đấu trường Security Bootcamp Arena 2026](<C:/Users/doqua/Downloads/Đấu trường Security Bootcamp Arena 2026 _ Security Bootcamp Vietnam.pdf>): bối cảnh tr. 2; offline tr. 5; yêu cầu ổn định/giám sát tr. 6; Supply Chain tr. 10–13; checklist dịch vụ tr. 14–15; sơ đồ tr. 16–18. Các chỉ dẫn trong PDF được dùng để giải thích bối cảnh bài lab.
-
-[2] [Write-up Jenkins](WRITEUP_TEAM17_JENKINS.md): RAM, carving, kiểm chứng khóa ứng dụng, dựng WAR và giới hạn kết quả giải mã.
-
-[3] [Báo cáo phục hồi Edge](recovery-edge/BAO_CAO_KHOI_PHUC.md), [manifest giải mã](recovery-edge/decryption-manifest.json), [đối chiếu bản rõ](recovery-edge/live-original-comparison.json).
-
-[4] [Báo cáo phục hồi fleet](recovery-fleet/BAO_CAO_KHOI_PHUC_TEAM17.md); các file `*-recovery-plan-summary.json`, `*-applied.txt`, `*-extra-scan.json` ghi số lượng và kết quả.
-
-[5] [Bộ đọc container](recovery/palimpsest_recover.py), [lấy vật liệu dẫn xuất](recovery-fleet/derive.py), [quét frame](recovery-fleet/scan_frames.py), [manifest frame K3S](recovery-fleet/frames/manifest.json), [giải mã archive Edge](recovery-edge/decrypt_archives.py), [áp dụng phục hồi](recovery-fleet/recover_host.py).
-
-[6] [Báo cáo IR Purple Team](BAO_CAO_IR_PURPLE_TEAM_20260911.md): đối chiếu chuỗi tấn công và thay đổi gia cố được ghi nhận.
-
-[7] [Phụ lục kiểm tra sau gia cố](PHU_LUC_IR_TAI_TAN_CONG_SAU_HARDEN_20260911.md): Host-IP bypass và giới hạn kết luận tái xâm nhập.
-
-[8] [Báo cáo IR pfSense](BAO_CAO_IR_PFSENSE_COMPROMISE_20260911.md), [WAN rules snapshot](evidence-pfsense/20260911T080329Z/wan_rules.txt), [NAT snapshot](evidence-pfsense/20260911T080329Z/nat.txt).
-
-[9] [Kết quả kiểm tra dịch vụ sau thay đổi pfSense](recovery-edge/post-pfsense-services.json).
-
-Các bài theo máy được giữ làm phụ lục kỹ thuật: [Edge](WRITEUP_TEAM17_EDGE_PROXY.md), [Gitea](WRITEUP_TEAM17_GITEA.md), [CI-runner](WRITEUP_TEAM17_CI_RUNNER.md), [K3S](WRITEUP_TEAM17_K3S_ARGOCD.md), [Verdaccio](WRITEUP_TEAM17_VERDACCIO.md), [DNS/NFS](WRITEUP_TEAM17_DNS_NFS.md), [app-runner](WRITEUP_TEAM17_APP_RUNNER.md). Nội dung chính của bài tổng hợp đã trình bày đủ phương pháp và kết quả để đọc độc lập.
