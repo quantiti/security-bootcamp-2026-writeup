@@ -17,13 +17,11 @@ Trong tình huống này, chỉ có trang web trả HTTP 200 chưa đủ. Chúng
 
 Kết quả nổi bật là phục hồi Jenkins từ dữ liệu còn sót trong RAM/đĩa, sau đó tìm được frame phục vụ giải mã Palimpsest trong RAM Edge-proxy và K3S. Lượt giải mã nhiều máy ghi nhận **662 file được xác thực và thay thế**; nguồn đĩa Edge-proxy có thêm **101/101 container giải mã thành công**. Tuy nhiên, kết quả giải mã không đồng nghĩa hệ thống đã an toàn: kiểm tra sau gia cố vẫn thấy Edge bị bypass bằng Host là IP, còn một lượt điều tra sau đó xác nhận pfSense bị chiếm tài khoản quản trị. [2][3][4][7][8]
 
-Bài viết đi theo quá trình ra quyết định và bằng chứng kỹ thuật. Những bước mới chỉ là phương án siết FW được ghi rõ ở phần thiết kế; chúng không được tính là thay đổi đã triển khai thành công.
-
 ## 2. Hiểu hệ thống trước khi sửa từng máy
 
 ### 2.1. Một doanh nghiệp thu nhỏ trên ESXi
 
-Theo sơ đồ BTC, mỗi đội có một vùng WAN riêng, pfSense làm firewall/router và các máy ảo nằm trên ESXi. Trong bằng chứng đang xét, WAN pfSense là `10.10.117.2`, ESXi là `10.10.117.3`. Các file RAM mang tiền tố `Team24`, trong khi nhiều báo cáo phục hồi dùng `Team17`; bài này giữ nguyên tên artifact gốc và đối chiếu bằng vai trò/IP máy, không dùng tên file để suy ra danh tính người thực hiện. [1, tr. 16–18][2][8]
+Theo sơ đồ BTC, mỗi đội có một vùng WAN riêng, pfSense làm firewall/router và các máy ảo nằm trên ESXi. Trong bằng chứng đang xét, WAN pfSense là `10.10.117.2`, ESXi là `10.10.117.3`.;  [1, tr. 16–18][2][8]
 
 | Vùng mạng | Thành phần chính | Vai trò trong bài |
 |---|---|---|
@@ -33,7 +31,7 @@ Theo sơ đồ BTC, mỗi đội có một vùng WAN riêng, pfSense làm firewa
 | Vùng quản trị `172.16.204.0/24` | Máy quản trị của đội | Đường vào để điều tra, phục hồi, kiểm tra |
 | Mạng BTC `10.10.0.0/24` | SIEM .8, CTFd .10 | Thu log, giám sát và tính điểm |
 
-Vùng khách hàng VLAN 20 còn có Web, VPN, domain controller và workstation. Chúng xuất hiện trong phần FW vì có cổng thuộc checklist BTC; hồ sơ hiện có không ghi nhận giải mã các máy này nên không dựng thêm câu chuyện phục hồi ransomware cho chúng.
+Vùng khách hàng VLAN 20 còn có Web, VPN, domain controller và workstation. Chúng xuất hiện trong phần FW vì có cổng thuộc checklist BTC; 
 
 ### 2.2. Vì sao các dịch vụ liên quan chặt chẽ với nhau?
 
@@ -67,8 +65,6 @@ DNS/NFS cung cấp các phụ thuộc cho nhiều mắt xích trên.
 Điều này giải thích vì sao phục hồi từng VM riêng lẻ chưa giải quyết xong bài toán. Khi DNS/NFS chưa lên, ứng dụng phụ thuộc vẫn lỗi; khi khôi phục nguyên cấu hình lab, các đường tấn công có chủ đích trong đề cũng hoạt động trở lại.
 
 ### 2.3. Những ràng buộc quyết định chiến lược
-
-Mạng thi đấu được mô tả là offline. Vì thế, lỗi tải image hoặc metadata từ Internet phải được đánh giá cùng điều kiện mạng, không mặc định là dấu hiệu mã hóa còn sót. Một ví dụ thực tế là ArgoCD có image cache nhưng vẫn lỗi vì `imagePullPolicy=Always`. [1, tr. 5][4]
 
 BTC yêu cầu **giữ mở WAN 8000 và 8080**. Đề cũng liệt kê cổng giám sát cho DC, workstation, VPN và quản trị. Đóng hết đường vào có thể làm giảm tấn công nhưng đồng thời làm dịch vụ không đạt yêu cầu. Phần siết FW vì vậy phải bắt đầu từ danh sách luồng bắt buộc và quyền truy cập ứng dụng. [1, tr. 10–11, 14–15]
 
